@@ -23,7 +23,7 @@ import org.openstreetmap.atlas.utilities.configuration.Configuration;
 public class InvalidLanesTagCheck extends BaseCheck
 {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1459761692833694715L;
 
     private static final List<String> FALLBACK_INSTRUCTIONS = Arrays
             .asList("Way {0,number,#} has an invalid lanes value.");
