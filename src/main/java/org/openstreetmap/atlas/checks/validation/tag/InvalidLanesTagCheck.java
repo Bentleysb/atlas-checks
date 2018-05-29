@@ -82,7 +82,8 @@ public class InvalidLanesTagCheck extends BaseCheck
         if (!this.lanesFilter.test(object)
                 && !((Validators.isOfType(object, OneWayTag.class, OneWayTag.YES)
                         || Validators.isOfType(object, OneWayTag.class, OneWayTag.ONE))
-                        && LanesTag.numberOfLanes(object).get() >= excludeOnewayMinimum))
+                        && LanesTag.numberOfLanes(object)
+                                .orElse((int) excludeOnewayMinimum - 1) >= excludeOnewayMinimum))
         {
             this.markAsFlagged(((Edge) object).getOsmIdentifier());
             return Optional.of(this.createFlag(object,

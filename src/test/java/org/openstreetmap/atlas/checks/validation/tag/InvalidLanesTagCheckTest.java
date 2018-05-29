@@ -46,4 +46,12 @@ public class InvalidLanesTagCheckTest
                 new InvalidLanesTagCheck(inlineConfiguration));
         this.verifier.globallyVerify(flags -> Assert.assertEquals(0, flags.size()));
     }
+
+    @Test
+    public void invalidLanesTagOneway()
+    {
+        this.verifier.actual(this.setup.invalidLanesTagOneway(),
+                new InvalidLanesTagCheck(inlineConfiguration));
+        this.verifier.globallyVerify(flags -> Assert.assertEquals(1, flags.size()));
+    }
 }
