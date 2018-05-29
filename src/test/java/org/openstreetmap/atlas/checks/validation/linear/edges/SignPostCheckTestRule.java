@@ -396,6 +396,26 @@ public class SignPostCheckTestRule extends CoreTestRule
                                     "destination=somewhere" }) })
     private Atlas motorwayMotorwayLinkWithJunctionAndDestinationAtlas;
 
+    @TestAtlas(
+            // nodes
+            nodes = { @Node(coordinates = @Loc(value = HIGHWAY_1)),
+                    @Node(coordinates = @Loc(value = HIGHWAY_3), tags = {
+                            "highway=motorway_junction" }),
+                    @Node(coordinates = @Loc(value = HIGHWAY_5)),
+                    @Node(coordinates = @Loc(value = LINK_1)),
+                    @Node(coordinates = @Loc(value = LINK_4)) },
+            // edges
+            edges = {
+                    @Edge(coordinates = { @Loc(value = HIGHWAY_1), @Loc(value = HIGHWAY_2),
+                            @Loc(value = HIGHWAY_3) }, tags = { "highway=motorway" }),
+                    @Edge(coordinates = { @Loc(value = HIGHWAY_3), @Loc(value = HIGHWAY_4),
+                            @Loc(value = HIGHWAY_5) }, tags = { "highway=motorway" }),
+                    @Edge(coordinates = { @Loc(value = HIGHWAY_3), @Loc(value = LINK_1),
+                            @Loc(value = LINK_2), @Loc(value = LINK_3),
+                            @Loc(value = LINK_4) }, tags = { "highway=motorway_link",
+                                    "destination:ref=somewhere" }) })
+    private Atlas motorwayMotorwayLinkWithJunctionAndDestinationRefAtlas;
+
     public Atlas motorroadPrimaryLinkMissingJunctionAndDestinationAtlas()
     {
         return this.motorroadPrimaryLinkMissingJunctionAndDestinationAtlas;
@@ -419,6 +439,11 @@ public class SignPostCheckTestRule extends CoreTestRule
     public Atlas motorwayMotorwayLinkWithJunctionAndDestinationAtlas()
     {
         return this.motorwayMotorwayLinkWithJunctionAndDestinationAtlas;
+    }
+
+    public Atlas motorwayMotorwayLinkWithJunctionAndDestinationRefAtlas()
+    {
+        return this.motorwayMotorwayLinkWithJunctionAndDestinationRefAtlas;
     }
 
     public Atlas motorwayMultipleLinksMissingJunctionAndDestinationAtlas()
