@@ -5,7 +5,9 @@ This check flags roads that have invalid `lanes` tag values.
 Valid values are configurable. The defaults are:  
 `1,1.5,2,3,4,5,6,7,8,9,10`
 
-In OSM, generally, lanes values greater than 10 are incorrect, and no lanes values should have special characters with the exception of 1.5. The lanes value 1.5 is valid, due to people often using this value to signify a narrow two lane road.
+In OSM, generally, lanes values greater than 10 are incorrect, and no lanes values should have special characters with the exception of 1.5. The lanes value 1.5 is valid, due to people often using this value to signify a narrow two lane road.  
+
+Large `lanes` values are often valid when the road is one way, as they can include things such as toll plazas.
 
 #### Live Examples
 
@@ -28,19 +30,23 @@ Our first goal is to validate the incoming Atlas object. Valid features for this
     {
         return Validators.hasValuesFor(object, LanesTag.class)
                 && HighwayTag.highwayTag(object).isPresent() && object instanceof Edge
-                && !this.isFlagged(((Edge) object).getMasterEdgeIdentifier());
+                && !this.isFlagged(((Edge) object).getOsmIdentifier());
     }
 ```
 
-The valid objects are then tested against the list of valid `lanes` tag values, and flagged if their value is invalid.
+The valid objects are then tested against the list of valid `lanes` tag values, and flagged if their value is invalid.  
+The list of valid values can include exact values and a minimum value for one way roads. 
 
 ```java
 @Override
     protected Optional<CheckFlag> flag(final AtlasObject object)
     {
-        if (!this.lanesFilter.test(object))
+        if (!this.lanesFilter.test(object)
+                        && !((Validators.isOfType(object, OneWayTag.class, OneWayTag.YES)
+                                || Validators.isOfType(object, OneWayTag.class, OneWayTag.ONE))
+                                && LanesTag.numberOfLanes(object).get() >= excludeOnewayMinimum))
         {
-            this.markAsFlagged(((Edge) object).getMasterEdgeIdentifier());
+            this.markAsFlagged(((Edge) object).getOsmIdentifier());
             return Optional.of(this.createFlag(object,
                     this.getLocalizedInstruction(0, object.getOsmIdentifier())));
         }
