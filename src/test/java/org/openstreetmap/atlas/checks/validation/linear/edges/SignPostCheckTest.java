@@ -24,6 +24,10 @@ public class SignPostCheckTest
                             + "\"SignPostCheck.ramp.differentiator.tag\": \"diff\","
                             + "\"SignPostCheck.ramp.angle.difference.degrees\": 90.0" + "}"));
 
+    private static SignPostCheck CHECK2 = new SignPostCheck(
+            ConfigurationResolver.inlineConfiguration(
+                    "{\"SignPostCheck.source.filter\": \"highway->motorway,trunk\", \"SignPostCheck.ramp.filter\": \"highway->motorway_link,trunk_link\"}"));
+
     @Rule
     public SignPostCheckTestRule setup = new SignPostCheckTestRule();
 
@@ -59,24 +63,6 @@ public class SignPostCheckTest
                 CHECK);
         this.verifier.verifyExpectedSize(1);
         this.verifier.verify(flag -> verify(flag, 2, true, true));
-    }
-
-    @Test
-    public void motorwayLinkMotorwayMissingJunctionAndDestinationAtlas()
-    {
-        this.verifier.actual(this.setup.motorwayLinkMotorwayMissingJunctionAndDestinationAtlas(),
-                CHECK);
-        this.verifier.verifyExpectedSize(1);
-        this.verifier.verify(flag -> verify(flag, 1, true, false));
-
-        // // Verify that we flagged starting node of the ramp (formed by single edge)
-        //// this.verifier.verify(flag ->
-        //// {
-        //// final FlaggedObject flaggedPoint = flag.getFlaggedObjects().stream()
-        //// .filter(object -> object instanceof FlaggedPoint).findFirst().get();
-        //// final Location flaggedLocation = flaggedPoint.getGeometry().iterator().next();
-        //// Assert.assertEquals(Location.forString(SignPostCheckTestRule.LINK_1), flaggedLocation);
-        //// });
     }
 
     @Test
@@ -156,24 +142,6 @@ public class SignPostCheckTest
     }
 
     @Test
-    public void primaryLinkTrunkMissingJunctionAndDestinationAtlas()
-    {
-        this.verifier.actual(this.setup.primaryLinkTrunkMissingJunctionAndDestinationAtlas(),
-                CHECK);
-        this.verifier.verifyExpectedSize(1);
-        this.verifier.verify(flag -> verify(flag, 1, true, false));
-
-        // // Verify that we flagged starting node of the ramp (formed by 2 edges)
-        // this.verifier.verify(flag ->
-        // {
-        // final FlaggedObject flaggedPoint = flag.getFlaggedObjects().stream()
-        // .filter(object -> object instanceof FlaggedPoint).findFirst().get();
-        // final Location flaggedLocation = flaggedPoint.getGeometry().iterator().next();
-        // Assert.assertEquals(Location.forString(SignPostCheckTestRule.LINK_1), flaggedLocation);
-        // });
-    }
-
-    @Test
     public void primaryMotorwayLinkMissingJunctionAndDestinationAtlas()
     {
         this.verifier.actual(this.setup.primaryMotorwayLinkMissingJunctionAndDestinationAtlas(),
@@ -238,5 +206,23 @@ public class SignPostCheckTest
         this.verifier.actual(this.setup.unclassifiedPrimaryLinkMissingJunctionAndDestinationAtlas(),
                 CHECK);
         this.verifier.verifyEmpty();
+    }
+
+    @Test
+    public void motorwayMotorwayLinkBranchMissingDestinationAtlas()
+    {
+        this.verifier.actual(this.setup.motorwayMotorwayLinkBranchMissingDestinationAtlas(),
+                CHECK2);
+        this.verifier.verifyExpectedSize(1);
+        this.verifier.verify(flag -> verify(flag, 2, true, false));
+    }
+
+    @Test
+    public void motorwayMotorwayLinkTwoWayBranchMissingDestinationAtlas()
+    {
+        this.verifier.actual(this.setup.motorwayMotorwayLinkTwoWayBranchMissingDestinationAtlas(),
+                CHECK2);
+        this.verifier.verifyExpectedSize(1);
+        this.verifier.verify(flag -> verify(flag, 1, true, false));
     }
 }
