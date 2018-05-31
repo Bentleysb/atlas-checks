@@ -9,16 +9,7 @@ In OSM, generally, lanes values greater than 10 are incorrect, and no lanes valu
 
 Large `lanes` values are often valid when the road is one way, as they can include things such as toll plazas.
 
-#### Live Examples
-
-1. The way [id:313769043](https://www.openstreetmap.org/way/313769043) has an invalid `lanes` tag value of `2;1`. `lanes` tag values must be numeric. 
-2. The way [id:58693335](https://www.openstreetmap.org/way/58693335) has an invalid `lanes` tag value of `20`. Satellite imagery shows this to a misrepresentation of reality.
-
-#### Code Review
-
-In [Atlas](https://github.com/osmlab/atlas), OSM elements are represented as Edges, Points, Lines, Nodes & Relations; in our case, we’re are looking at [Edges](https://github.com/osmlab/atlas/blob/dev/src/main/java/org/openstreetmap/atlas/geography/atlas/items/Edge.java).
-
-Our first goal is to validate the incoming Atlas object. Valid features for this check will satisfy the following conditions:
+#### Live Example
 
 * Is an Edge
 * Has a `highway` tag
@@ -59,3 +50,6 @@ To learn more about the code, please look at the comments in the source code for
 [InvalidLanesTagCheck](../../src/main/java/org/openstreetmap/atlas/checks/validation/tag/InvalidLanesTagCheck.java)
 =======
 >>>>>>> parent of fbc76d5... Finished creating InvalidLanesTagCheck.md, added serial version uid.
+=======
+ 
+>>>>>>> parent of 3f2aaa4... Continued creation of InvalidLanesTagCheck.md
