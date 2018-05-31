@@ -12,7 +12,7 @@ Large `lanes` values are often valid when the road is one way, as they can inclu
 #### Live Examples
 
 1. The way [id:313769043](https://www.openstreetmap.org/way/313769043) has an invalid `lanes` tag value of `2;1`. `lanes` tag values must be numeric. 
-2. The way [id:58693335](https://www.openstreetmap.org/way/58693335) has an invalid `lanes` tag value of `20`. Satellite imagery shows this to be a misrepresentation of reality.
+2. The way [id:58693335](https://www.openstreetmap.org/way/58693335) has an invalid `lanes` tag value of `20`. Satellite imagery shows this to a misrepresentation of reality.
 
 #### Code Review
 
@@ -57,3 +57,5 @@ The list of valid values can include exact values and a minimum value for one wa
 
 To learn more about the code, please look at the comments in the source code for the check.  
 [InvalidLanesTagCheck](../../src/main/java/org/openstreetmap/atlas/checks/validation/tag/InvalidLanesTagCheck.java)
+=======
+>>>>>>> parent of fbc76d5... Finished creating InvalidLanesTagCheck.md, added serial version uid.
