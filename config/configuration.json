@@ -139,6 +139,15 @@
       "difficulty": "HARD"
     }
   },
+  "OneMemberRelationCheck": {
+    "pointless_tags.filter":"created_by->*|fixme->*",
+    "challenge": {
+      "description": "Tasks containing nodes that serve no purpose.",
+      "blurb": "Pointless Points",
+      "instruction": "Delete the nodes that serve no purpose.",
+      "difficulty": "EASY"
+    }
+  },
   "RoundaboutClosedLoopCheck": {
     "challenge": {
       "description": "A roundabout should be formed by one-way edges with no dead-end nodes.",

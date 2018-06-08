@@ -1,12 +1,10 @@
 package org.openstreetmap.atlas.checks.validation.points;
 
-
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.openstreetmap.atlas.checks.configuration.ConfigurationResolver;
-import org.openstreetmap.atlas.checks.validation.verifier.ConsumerBasedExpectedCheckVerifier;
-import org.openstreetmap.atlas.utilities.configuration.Configuration;
+import org.openstreetmap.atlas.geography.atlas.Atlas;
+import org.openstreetmap.atlas.utilities.testing.CoreTestRule;
+import org.openstreetmap.atlas.utilities.testing.TestAtlas;
+import org.openstreetmap.atlas.utilities.testing.TestAtlas.Loc;
+import org.openstreetmap.atlas.utilities.testing.TestAtlas.Point;
 
 /**
  * Tests for {@link PointlessPointCheck}
@@ -14,22 +12,29 @@ import org.openstreetmap.atlas.utilities.configuration.Configuration;
  * @author bbreithaupt
  */
 
-public class PointlessPointCheckTest
+public class PointlessPointCheckTestRule extends CoreTestRule
 {
-    @Rule
-    public PointlessPointCheckTestRule setup = new PointlessPointCheckTestRule();
+    private static final String TEST_1 = "47.2136626201459,-122.443275382856";
 
-    @Rule
-    public ConsumerBasedExpectedCheckVerifier verifier = new ConsumerBasedExpectedCheckVerifier();
+    @TestAtlas(
+            // points
+            points = { @Point(coordinates = @Loc(value = TEST_1), tags = { "created_by=Bentleysb",
+                    "fixme=pointless" }) })
+    private Atlas pointlessPoint;
 
-    private final Configuration inlineConfiguration = ConfigurationResolver.inlineConfiguration(
-            "{\"InvalidLanesTagCheck\":{\"pointless_tags.filter\":\"created_by->*\"}}");
+    @TestAtlas(
+            // points
+            points = { @Point(coordinates = @Loc(value = TEST_1), tags = { "created_by=Bentleysb",
+                    "fixme=pointless", "amenity=waste_basket" }) })
+    private Atlas usefulPoint;
 
-    @Test
-    public void validLanesTag()
+    public Atlas pointlessPoint()
     {
-        this.verifier.actual(this.setup.validLanesTag(),
-                new InvalidLanesTagCheck(inlineConfiguration));
-        this.verifier.globallyVerify(flags -> Assert.assertEquals(0, flags.size()));
+        return this.pointlessPoint;
+    }
+
+    public Atlas usefulPoint()
+    {
+        return this.usefulPoint;
     }
 }

@@ -16,7 +16,8 @@ import org.openstreetmap.atlas.utilities.configuration.Configuration;
 import org.openstreetmap.osmosis.core.domain.v0_6.Tag;
 
 /**
- * This check flags {@link Point}s that only contain pointless tags. 
+ * This check flags {@link Point}s that only contain pointless tags. Pointless tags are defined by
+ * the {@code pointlessTagsFilter}.
  *
  * @author bbreithaupt
  */
@@ -37,22 +38,26 @@ public class PointlessPointCheck extends BaseCheck
      * checks with this constructor, supplying a configuration that can be used to adjust any
      * parameters that the check uses during operation.
      *
-     * @param configuration the JSON configuration for this check
+     * @param configuration
+     *            the JSON configuration for this check
      */
     public PointlessPointCheck(final Configuration configuration)
     {
         super(configuration);
         this.pointlessTagsFilter = (TaggableFilter) configurationValue(configuration,
-                "pointless_tags.filter", POINTLESS_TAGS_FILTER_DEFAULT, value -> new TaggableFilter(value.toString()));
+                "pointless_tags.filter", POINTLESS_TAGS_FILTER_DEFAULT,
+                value -> new TaggableFilter(value.toString()));
     }
 
     /**
      * This function will validate if the supplied atlas object is valid for the check.
      *
-     * @param object the atlas object supplied by the Atlas-Checks framework for evaluation
+     * @param object
+     *            the atlas object supplied by the Atlas-Checks framework for evaluation
      * @return {@code true} if this object should be checked
      */
-    @Override public boolean validCheckForObject(final AtlasObject object)
+    @Override
+    public boolean validCheckForObject(final AtlasObject object)
     {
         return object instanceof Point && pointlessTagsFilter.test(object);
     }
@@ -60,15 +65,21 @@ public class PointlessPointCheck extends BaseCheck
     /**
      * This is the actual function that will check to see whether the object needs to be flagged.
      *
-     * @param object the atlas object supplied by the Atlas-Checks framework for evaluation
+     * @param object
+     *            the atlas object supplied by the Atlas-Checks framework for evaluation
      * @return an optional {@link CheckFlag} object that
      */
-    @Override protected Optional<CheckFlag> flag(final AtlasObject object)
+    @Override
+    protected Optional<CheckFlag> flag(final AtlasObject object)
     {
+        // Get the objects tags
         final Map<String, String> tags = object.getOsmTags();
+        // For each tag, make it taggable and test it against the pointlessTagsFilter
         for (final String tagKey : tags.keySet())
         {
             final Tag tagPair = new Tag(tagKey, tags.get(tagKey));
+            // If the tag is not in the filter it is not pointless and this object should not be
+            // flagged
             if (!pointlessTagsFilter.test(new TagMap(Collections.singletonList(tagPair))))
             {
                 return Optional.empty();
@@ -78,10 +89,9 @@ public class PointlessPointCheck extends BaseCheck
                 this.getLocalizedInstruction(0, object.getOsmIdentifier())));
     }
 
-    @Override protected List<String> getFallbackInstructions()
+    @Override
+    protected List<String> getFallbackInstructions()
     {
         return FALLBACK_INSTRUCTIONS;
     }
 }
-
-
