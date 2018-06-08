@@ -2,12 +2,14 @@ package org.openstreetmap.atlas.checks.validation.points;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import org.openstreetmap.atlas.checks.base.BaseCheck;
 import org.openstreetmap.atlas.checks.flag.CheckFlag;
+import org.openstreetmap.atlas.geography.Location;
 import org.openstreetmap.atlas.geography.atlas.items.AtlasObject;
 import org.openstreetmap.atlas.geography.atlas.items.Point;
 import org.openstreetmap.atlas.geography.atlas.pbf.store.TagMap;
@@ -59,7 +61,8 @@ public class PointlessPointCheck extends BaseCheck
     @Override
     public boolean validCheckForObject(final AtlasObject object)
     {
-        return object instanceof Point && pointlessTagsFilter.test(object);
+        return object instanceof Point && pointlessTagsFilter.test(object)
+                && ((Point) object).relations().size() == 0;
     }
 
     /**
@@ -85,6 +88,26 @@ public class PointlessPointCheck extends BaseCheck
                 return Optional.empty();
             }
         }
+        // Test to see if it is likely part of a way, and don't flag if so. Likely not if there are
+        // overlapping nodes, and likely so if it matches a locations in a LineItem or Area.
+        final Location objectLocation = ((Point) object).getLocation();
+        int pointCount = 0;
+        final Iterator points = object.getAtlas().pointsAt(objectLocation).iterator();
+        while (points.hasNext())
+        {
+            pointCount++;
+            points.next();
+        }
+        if (pointCount == 1
+                && (object.getAtlas().lineItemsContaining(objectLocation).iterator().hasNext())
+                || object.getAtlas()
+                        .areasCovering(objectLocation,
+                                area -> area.asPolygon().contains(objectLocation))
+                        .iterator().hasNext())
+        {
+            return Optional.empty();
+        }
+
         return Optional.of(this.createFlag(object,
                 this.getLocalizedInstruction(0, object.getOsmIdentifier())));
     }

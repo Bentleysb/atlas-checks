@@ -39,4 +39,52 @@ public class PointlessPointCheckTest
                 new PointlessPointCheck(inlineConfiguration));
         this.verifier.globallyVerify(flags -> Assert.assertEquals(0, flags.size()));
     }
+
+    @Test
+    public void pointlessPointIntersectCorner()
+    {
+        this.verifier.actual(this.setup.pointlessPointIntersectCorner(),
+                new PointlessPointCheck(inlineConfiguration));
+        this.verifier.globallyVerify(flags -> Assert.assertEquals(0, flags.size()));
+    }
+
+    @Test
+    public void pointlessPointIntersect()
+    {
+        this.verifier.actual(this.setup.pointlessPointIntersect(),
+                new PointlessPointCheck(inlineConfiguration));
+        this.verifier.globallyVerify(flags -> Assert.assertEquals(1, flags.size()));
+    }
+
+    @Test
+    public void pointlessPointIntersectCornerDuplicate()
+    {
+        this.verifier.actual(this.setup.pointlessPointIntersectCornerDuplicate(),
+                new PointlessPointCheck(inlineConfiguration));
+        this.verifier.globallyVerify(flags -> Assert.assertEquals(2, flags.size()));
+    }
+
+    @Test
+    public void pointlessPointIntersectCornerDuplicateUseful()
+    {
+        this.verifier.actual(this.setup.pointlessPointIntersectCornerDuplicateUseful(),
+                new PointlessPointCheck(inlineConfiguration));
+        this.verifier.globallyVerify(flags -> Assert.assertEquals(1, flags.size()));
+    }
+
+    @Test
+    public void pointlessPointIntersectAreaCorner()
+    {
+        this.verifier.actual(this.setup.pointlessPointIntersectAreaCorner(),
+                new PointlessPointCheck(inlineConfiguration));
+        this.verifier.globallyVerify(flags -> Assert.assertEquals(0, flags.size()));
+    }
+
+    @Test
+    public void pointlessPointIntersectArea()
+    {
+        this.verifier.actual(this.setup.pointlessPointIntersectArea(),
+                new PointlessPointCheck(inlineConfiguration));
+        this.verifier.globallyVerify(flags -> Assert.assertEquals(1, flags.size()));
+    }
 }
