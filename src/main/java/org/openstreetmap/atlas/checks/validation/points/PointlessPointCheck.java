@@ -27,9 +27,9 @@ public class PointlessPointCheck extends BaseCheck
     private static final long serialVersionUID = 3648467506199366032L;
 
     private static final List<String> FALLBACK_INSTRUCTIONS = Arrays
-            .asList("Point {0,number,#} is pointless.");
+            .asList("Node {0,number,#} is pointless.");
 
-    private static final String POINTLESS_TAGS_FILTER_DEFAULT = "created_by->*|fixme->*";
+    private static final String POINTLESS_TAGS_FILTER_DEFAULT = "created_by->*|fixme->*|source->*|source:date->*|height->*|attribution->*";
 
     private final TaggableFilter pointlessTagsFilter;
 

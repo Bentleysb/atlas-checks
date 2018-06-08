@@ -18,6 +18,10 @@ The default values are:
 
 * `created_by->*` 
 * `fixme->*`
+* `source->*`
+* `source:date->*`
+* `height->*`
+* `attribution->*`
 
 ```java
 public PointlessPointCheck(final Configuration configuration)
