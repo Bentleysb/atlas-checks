@@ -48,10 +48,14 @@ Finally, the filtered objects are tested to see if they contain any non-pointles
 @Override
     protected Optional<CheckFlag> flag(final AtlasObject object)
     {
+        // Get the objects tags
         final Map<String, String> tags = object.getOsmTags();
+        // For each tag, make it taggable and test it against the pointlessTagsFilter
         for (final String tagKey : tags.keySet())
         {
             final Tag tagPair = new Tag(tagKey, tags.get(tagKey));
+            // If the tag is not in the filter it is not pointless and this object should not be
+            // flagged
             if (!pointlessTagsFilter.test(new TagMap(Collections.singletonList(tagPair))))
             {
                 return Optional.empty();
