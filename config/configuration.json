@@ -139,7 +139,7 @@
       "difficulty": "HARD"
     }
   },
-  "OneMemberRelationCheck": {
+  "PointlessPointCheck": {
     "pointless_tags.filter":"created_by->*|fixme->*",
     "challenge": {
       "description": "Tasks containing nodes that serve no purpose.",
