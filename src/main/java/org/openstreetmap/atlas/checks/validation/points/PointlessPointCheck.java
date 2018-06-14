@@ -1,7 +1,7 @@
 package org.openstreetmap.atlas.checks.validation.points;
 
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -12,10 +12,9 @@ import org.openstreetmap.atlas.checks.flag.CheckFlag;
 import org.openstreetmap.atlas.geography.Location;
 import org.openstreetmap.atlas.geography.atlas.items.AtlasObject;
 import org.openstreetmap.atlas.geography.atlas.items.Point;
-import org.openstreetmap.atlas.geography.atlas.pbf.store.TagMap;
+import org.openstreetmap.atlas.tags.Taggable;
 import org.openstreetmap.atlas.tags.filters.TaggableFilter;
 import org.openstreetmap.atlas.utilities.configuration.Configuration;
-import org.openstreetmap.osmosis.core.domain.v0_6.Tag;
 
 /**
  * This check flags {@link Point}s that only contain pointless tags. Pointless tags are defined by
@@ -80,10 +79,11 @@ public class PointlessPointCheck extends BaseCheck
         // For each tag, make it taggable and test it against the pointlessTagsFilter
         for (final String tagKey : tags.keySet())
         {
-            final Tag tagPair = new Tag(tagKey, tags.get(tagKey));
+            final HashMap<String, String> tagPair = new HashMap<String, String>();
+            tagPair.put(tagKey, tags.get(tagKey));
             // If the tag is not in the filter it is not pointless and this object should not be
             // flagged
-            if (!pointlessTagsFilter.test(new TagMap(Collections.singletonList(tagPair))))
+            if (!pointlessTagsFilter.test(Taggable.with(tagPair)))
             {
                 return Optional.empty();
             }
