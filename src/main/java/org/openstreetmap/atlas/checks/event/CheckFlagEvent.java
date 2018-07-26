@@ -1,16 +1,15 @@
 package org.openstreetmap.atlas.checks.event;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 import org.openstreetmap.atlas.checks.base.Check;
 import org.openstreetmap.atlas.checks.flag.CheckFlag;
+import org.openstreetmap.atlas.checks.flag.FlaggedObject;
 import org.openstreetmap.atlas.geography.geojson.GeoJsonBuilder;
-import org.openstreetmap.atlas.geography.geojson.GeoJsonBuilder.LocationIterableProperties;
 import org.openstreetmap.atlas.geography.geojson.GeoJsonObject;
 import org.openstreetmap.atlas.tags.HighwayTag;
 
@@ -51,44 +50,43 @@ public final class CheckFlagEvent extends Event
         // Add additional properties
         additionalProperties.forEach(flagProperties::addProperty);
 
-        final JsonObject feature;
-        final List<LocationIterableProperties> geometries = flag.getLocationIterableProperties();
-        if (geometries.size() == 1)
+        final List<GeoJsonObject> flagFeatures = new ArrayList<>();
+        for (final FlaggedObject object : flag.getFlaggedObjects())
         {
-            feature = GEOJSON_BUILDER.create(geometries.get(0));
-        }
-        else
-        {
-            feature = GEOJSON_BUILDER.createGeometryCollection(geometries).jsonObject();
-        }
-
-        final JsonArray featureProperties = new JsonArray();
-        final Set<JsonElement> featureOsmIds = new HashSet<>();
-        geometries.stream().forEach(
-                geometry -> Optional.ofNullable(geometry.getProperties()).ifPresent(propertyMap ->
+            final GeoJsonObject flagFeature;
+            switch (object.getProperties().get("ItemType"))
+            {
+                case "Node":
+                case "Point":
                 {
-                    final JsonObject properties = new JsonObject();
-                    propertyMap.forEach(properties::addProperty);
-                    featureProperties.add(properties);
+                    flagFeature = GEOJSON_BUILDER.create(object.getGeometry(),
+                            GeoJsonBuilder.GeoJsonType.POINT);
+                    break;
+                }
+                case "Edge":
+                case "Line":
+                {
+                    flagFeature = GEOJSON_BUILDER.create(object.getGeometry(),
+                            GeoJsonBuilder.GeoJsonType.LINESTRING);
+                    break;
+                }
+                case "Area":
+                {
+                    flagFeature = GEOJSON_BUILDER.create(object.getGeometry(),
+                            GeoJsonBuilder.GeoJsonType.POLYGON);
+                    break;
+                }
+                default:
+                    flagFeature = null;
+            }
+            if (flagFeature != null)
+            {
+                flagFeatures.add(flagFeature.withNewProperties(object.getProperties()));
+            }
+        }
 
-                    Optional.ofNullable(properties.get("osmid")).ifPresent(featureOsmIds::add);
-                }));
-        final JsonArray uniqueFeatureOsmIds = new JsonArray();
-        featureOsmIds.forEach(uniqueFeatureOsmIds::add);
-
-        // Override name property if able to add a decorator to the name
-        CheckFlagEvent.featureDecorator(featureProperties)
-                .ifPresent(decorator -> flagProperties.addProperty("name",
-                        String.format("%s (%s)",
-                                Optional.ofNullable(flagProperties.getAsJsonPrimitive("name"))
-                                        .map(JsonPrimitive::getAsString).orElse("Task"),
-                                decorator)));
-
-        // Reference properties lost during GeoJson conversion
-        flagProperties.add("feature_properties", featureProperties);
-        flagProperties.add("feature_osmids", uniqueFeatureOsmIds);
-        flagProperties.addProperty("feature_count", geometries.size());
-
+        final JsonObject feature = GEOJSON_BUILDER.createFeatureCollection(flagFeatures)
+                .jsonObject();
         feature.addProperty("id", flag.getIdentifier());
         feature.add("properties", flagProperties);
         return feature;
