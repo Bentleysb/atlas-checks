@@ -32,7 +32,8 @@ public final class CheckFlagEvent extends Event
     private final CheckFlag flag;
 
     /**
-     * Converts give {@link CheckFlag} to {@link GeoJsonObject} with additional key-value parameters
+     * Converts given {@link CheckFlag} to a {@link GeoJsonObject} FeatureCollection, with
+     * additional key-value parameters
      *
      * @param flag
      *            {@link CheckFlag} to convert to {@link GeoJsonObject}
@@ -51,6 +52,7 @@ public final class CheckFlagEvent extends Event
         additionalProperties.forEach(flagProperties::addProperty);
 
         final List<GeoJsonObject> flagFeatures = new ArrayList<>();
+        // Get the geometry of each object based on its type
         for (final FlaggedObject object : flag.getFlaggedObjects())
         {
             final GeoJsonObject flagFeature;
@@ -81,12 +83,15 @@ public final class CheckFlagEvent extends Event
             }
             if (flagFeature != null)
             {
+                // Add the objects properties to its feature object and add the feature to the list
                 flagFeatures.add(flagFeature.withNewProperties(object.getProperties()));
             }
         }
 
+        // Create a FeatureCollection of the flag objects in their geojson feature form
         final JsonObject feature = GEOJSON_BUILDER.createFeatureCollection(flagFeatures)
                 .jsonObject();
+        // Add the flag info to the feature collection
         feature.addProperty("id", flag.getIdentifier());
         feature.add("properties", flagProperties);
         return feature;
