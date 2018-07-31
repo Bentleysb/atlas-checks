@@ -56,30 +56,40 @@ public final class CheckFlagEvent extends Event
         for (final FlaggedObject object : flag.getFlaggedObjects())
         {
             final GeoJsonObject flagFeature;
-            switch (object.getProperties().get("ItemType"))
+            // Check if the object is a Location
+            if (object.getProperties().get("ItemType") != null)
             {
-                case "Node":
-                case "Point":
+                switch (object.getProperties().get("ItemType"))
                 {
-                    flagFeature = GEOJSON_BUILDER.create(object.getGeometry(),
-                            GeoJsonBuilder.GeoJsonType.POINT);
-                    break;
+                    case "Node":
+                    case "Point":
+                    {
+                        flagFeature = GEOJSON_BUILDER.create(object.getGeometry(),
+                                GeoJsonBuilder.GeoJsonType.POINT);
+                        break;
+                    }
+                    case "Edge":
+                    case "Line":
+                    {
+                        flagFeature = GEOJSON_BUILDER.create(object.getGeometry(),
+                                GeoJsonBuilder.GeoJsonType.LINESTRING);
+                        break;
+                    }
+                    case "Area":
+                    {
+                        flagFeature = GEOJSON_BUILDER.create(object.getGeometry(),
+                                GeoJsonBuilder.GeoJsonType.POLYGON);
+                        break;
+                    }
+                    default:
+                        flagFeature = null;
                 }
-                case "Edge":
-                case "Line":
-                {
-                    flagFeature = GEOJSON_BUILDER.create(object.getGeometry(),
-                            GeoJsonBuilder.GeoJsonType.LINESTRING);
-                    break;
-                }
-                case "Area":
-                {
-                    flagFeature = GEOJSON_BUILDER.create(object.getGeometry(),
-                            GeoJsonBuilder.GeoJsonType.POLYGON);
-                    break;
-                }
-                default:
-                    flagFeature = null;
+            }
+            else
+            {
+                // Handle Locations like points
+                flagFeature = GEOJSON_BUILDER.create(object.getGeometry(),
+                        GeoJsonBuilder.GeoJsonType.POINT);
             }
             if (flagFeature != null)
             {
