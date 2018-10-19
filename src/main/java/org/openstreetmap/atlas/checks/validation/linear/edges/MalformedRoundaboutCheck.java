@@ -106,9 +106,10 @@ public class MalformedRoundaboutCheck extends BaseCheck
         final Set<Edge> roundaboutEdgeSet = getAllRoundaboutEdges(edge);
         try
         {
-             roundaboutEdges = Route.fromNonArrangedEdgeSet(roundaboutEdgeSet, false);
+            roundaboutEdges = Route.fromNonArrangedEdgeSet(roundaboutEdgeSet, false);
         }
-        catch (final CoreException badRoundabout){
+        catch (final CoreException badRoundabout)
+        {
             return Optional.of(this.createFlag(roundaboutEdgeSet,
                     this.getLocalizedInstruction(2, edge.getOsmIdentifier())));
         }

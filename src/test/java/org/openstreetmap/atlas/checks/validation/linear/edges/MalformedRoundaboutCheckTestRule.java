@@ -61,27 +61,27 @@ public class MalformedRoundaboutCheckTestRule extends CoreTestRule
                     @Node(coordinates = @Loc(value = CLOCKWISE_3)),
                     @Node(coordinates = @Loc(value = CLOCKWISE_4)),
                     @Node(coordinates = @Loc(value = CLOCKWISE_5)),
-                    @Node(coordinates = @Loc(value = COUNTER_CLOCKWISE_3))},
+                    @Node(coordinates = @Loc(value = COUNTER_CLOCKWISE_3)) },
             // edges
             edges = {
                     @Edge(id = "1234", coordinates = { @Loc(value = CLOCKWISE_1),
                             @Loc(value = CLOCKWISE_5) }, tags = { "junction=roundabout",
-                            "iso_country_code=SGP" }),
+                                    "iso_country_code=SGP" }),
                     @Edge(id = "1235", coordinates = { @Loc(value = CLOCKWISE_5),
                             @Loc(value = CLOCKWISE_4) }, tags = { "junction=roundabout",
-                            "iso_country_code=SGP" }),
+                                    "iso_country_code=SGP" }),
                     @Edge(id = "1236", coordinates = { @Loc(value = CLOCKWISE_4),
                             @Loc(value = CLOCKWISE_3) }, tags = { "junction=roundabout",
-                            "iso_country_code=SGP" }),
+                                    "iso_country_code=SGP" }),
                     @Edge(id = "1237", coordinates = { @Loc(value = CLOCKWISE_3),
                             @Loc(value = COUNTER_CLOCKWISE_3) }, tags = { "junction=roundabout",
-                            "iso_country_code=SGP" }),
+                                    "iso_country_code=SGP" }),
                     @Edge(id = "1239", coordinates = { @Loc(value = COUNTER_CLOCKWISE_3),
                             @Loc(value = CLOCKWISE_2) }, tags = { "junction=roundabout",
-                            "iso_country_code=SGP" }),
+                                    "iso_country_code=SGP" }),
                     @Edge(id = "1238", coordinates = { @Loc(value = CLOCKWISE_2),
                             @Loc(value = CLOCKWISE_1) }, tags = { "junction=roundabout",
-                            "iso_country_code=SGP" }) })
+                                    "iso_country_code=SGP" }) })
     private Atlas clockwiseRoundaboutLeftDrivingConcaveAtlas;
 
     // Clockwise roundabout, right driving country
