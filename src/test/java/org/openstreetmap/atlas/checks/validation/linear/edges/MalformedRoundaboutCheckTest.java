@@ -9,7 +9,7 @@ import org.openstreetmap.atlas.checks.validation.verifier.ConsumerBasedExpectedC
 /**
  * Tests for {@link MalformedRoundaboutCheck}
  *
- * @author savannahostrowski
+ * @author savannahostrowski, bbreithaupt
  */
 public class MalformedRoundaboutCheckTest
 {
@@ -26,6 +26,15 @@ public class MalformedRoundaboutCheckTest
                 new MalformedRoundaboutCheck(ConfigurationResolver.emptyConfiguration()));
 
         this.verifier.verifyEmpty();
+    }
+
+    @Test
+    public void testClockwiseRoundaboutLeftDrivingConcave()
+    {
+        this.verifier.actual(this.setup.clockwiseRoundaboutLeftDrivingConcaveAtlas(),
+                new MalformedRoundaboutCheck(ConfigurationResolver.emptyConfiguration()));
+
+        this.verifier.globallyVerify(flags -> Assert.assertEquals(1, flags.size()));
     }
 
     @Test

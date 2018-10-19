@@ -1,6 +1,5 @@
 package org.openstreetmap.atlas.checks.validation.linear.edges;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -11,8 +10,10 @@ import java.util.Set;
 
 import org.openstreetmap.atlas.checks.base.BaseCheck;
 import org.openstreetmap.atlas.checks.flag.CheckFlag;
+import org.openstreetmap.atlas.exception.CoreException;
 import org.openstreetmap.atlas.geography.atlas.items.AtlasObject;
 import org.openstreetmap.atlas.geography.atlas.items.Edge;
+import org.openstreetmap.atlas.geography.atlas.items.Route;
 import org.openstreetmap.atlas.tags.ISOCountryTag;
 import org.openstreetmap.atlas.tags.JunctionTag;
 import org.openstreetmap.atlas.utilities.configuration.Configuration;
@@ -21,7 +22,7 @@ import org.openstreetmap.atlas.utilities.configuration.Configuration;
  * This check flags roundabouts where the directionality is opposite to what it should be, where the
  * roundabout is multi-directional, or where the roundabout has incorrect geometry (concave).
  *
- * @author savannahostrowski
+ * @author savannahostrowski, bbreithaupt
  */
 
 public class MalformedRoundaboutCheck extends BaseCheck
@@ -31,6 +32,7 @@ public class MalformedRoundaboutCheck extends BaseCheck
             + " wrong direction, or has been improperly tagged as a roundabout.";
     private static final String MULTIDIRECTIONAL_INSTRUCTIONS = "This roundabout, {0,number,#}, is"
             + " multi-directional, or the roundabout has improper angle geometry.";
+    private static final String INCOMPLETE_INSTRUCTIONS = "This roundabout, {0,number,#}, is incomplete, or has been improperly tagged as a roundabout.";
     private static final List<String> LEFT_DRIVING_COUNTRIES_DEFAULT = Arrays.asList("AIA", "ATG",
             "AUS", "BGD", "BHS", "BMU", "BRB", "BRN", "BTN", "BWA", "CCK", "COK", "CXR", "CYM",
             "CYP", "DMA", "FJI", "FLK", "GBR", "GGY", "GRD", "GUY", "HKG", "IDN", "IMN", "IND",
@@ -40,7 +42,7 @@ public class MalformedRoundaboutCheck extends BaseCheck
             "TKL", "TLS", "TON", "TTO", "TUV", "TZA", "UGA", "VCT", "VGB", "VIR", "WSM", "ZAF",
             "ZMB", "ZWE");
     private static final List<String> FALLBACK_INSTRUCTIONS = Arrays.asList(WRONG_WAY_INSTRUCTIONS,
-            MULTIDIRECTIONAL_INSTRUCTIONS);
+            MULTIDIRECTIONAL_INSTRUCTIONS, INCOMPLETE_INSTRUCTIONS);
 
     private List<String> leftDrivingCountries;
 
@@ -100,7 +102,16 @@ public class MalformedRoundaboutCheck extends BaseCheck
         final String isoCountryCode = edge.tag(ISOCountryTag.KEY).toUpperCase();
 
         // Get all edges in the roundabout
-        final List<Edge> roundaboutEdges = getAllRoundaboutEdges(edge);
+        final Route roundaboutEdges;
+        final Set<Edge> roundaboutEdgeSet = getAllRoundaboutEdges(edge);
+        try
+        {
+             roundaboutEdges = Route.fromNonArrangedEdgeSet(roundaboutEdgeSet, false);
+        }
+        catch (final CoreException badRoundabout){
+            return Optional.of(this.createFlag(roundaboutEdgeSet,
+                    this.getLocalizedInstruction(2, edge.getOsmIdentifier())));
+        }
 
         // Get the direction of the roundabout
         final RoundaboutDirection direction = findRoundaboutDirection(roundaboutEdges);
@@ -108,7 +119,7 @@ public class MalformedRoundaboutCheck extends BaseCheck
         // If the roundabout is found to be going in multiple directions
         if (direction.equals(RoundaboutDirection.MULTIDIRECTIONAL))
         {
-            return Optional.of(this.createFlag(new HashSet<>(roundaboutEdges),
+            return Optional.of(this.createFlag(roundaboutEdgeSet,
                     this.getLocalizedInstruction(1, edge.getOsmIdentifier())));
         }
 
@@ -120,7 +131,7 @@ public class MalformedRoundaboutCheck extends BaseCheck
         if (direction.equals(RoundaboutDirection.CLOCKWISE) && !isLeftDriving
                 || direction.equals(RoundaboutDirection.COUNTERCLOCKWISE) && isLeftDriving)
         {
-            return Optional.of(this.createFlag(new HashSet<>(roundaboutEdges),
+            return Optional.of(this.createFlag(roundaboutEdgeSet,
                     this.getLocalizedInstruction(0, edge.getOsmIdentifier())));
         }
         return Optional.empty();
@@ -134,9 +145,9 @@ public class MalformedRoundaboutCheck extends BaseCheck
      *            An Edge object known to be a roundabout edge
      * @return A list of edges in the roundabout
      */
-    private List<Edge> getAllRoundaboutEdges(final Edge edge)
+    private Set<Edge> getAllRoundaboutEdges(final Edge edge)
     {
-        final List<Edge> roundaboutEdges = new ArrayList<>();
+        final Set<Edge> roundaboutEdges = new HashSet<>();
 
         // Initialize a queue to add yet to be processed connected edges to
         final Queue<Edge> queue = new LinkedList<>();
@@ -166,7 +177,6 @@ public class MalformedRoundaboutCheck extends BaseCheck
                 }
             }
         }
-        roundaboutEdges.sort(Edge::compareTo);
         return roundaboutEdges;
     }
 
@@ -183,7 +193,7 @@ public class MalformedRoundaboutCheck extends BaseCheck
      *         roundabout, and UNKNOWN if all edge cross products are 0 or if the roundabout's
      *         geometry is malformed
      */
-    private static RoundaboutDirection findRoundaboutDirection(final List<Edge> roundaboutEdges)
+    private static RoundaboutDirection findRoundaboutDirection(final Route roundaboutEdges)
     {
         // Initialize the directionSoFar to UNKNOWN as we have no directional information yet
         RoundaboutDirection directionSoFar = RoundaboutDirection.UNKNOWN;
