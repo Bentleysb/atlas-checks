@@ -104,10 +104,12 @@ public class MalformedRoundaboutCheck extends BaseCheck
         // Get all edges in the roundabout
         final Route roundaboutEdges;
         final Set<Edge> roundaboutEdgeSet = getAllRoundaboutEdges(edge);
+        // Try to build a Route from the edges
         try
         {
             roundaboutEdges = Route.fromNonArrangedEdgeSet(roundaboutEdgeSet, false);
         }
+        // If a Route cannot be formed, flag the edges as an incomplete roundabout.
         catch (final CoreException badRoundabout)
         {
             return Optional.of(this.createFlag(roundaboutEdgeSet,
@@ -139,12 +141,11 @@ public class MalformedRoundaboutCheck extends BaseCheck
     }
 
     /**
-     * This method gets all edges in a roundabout given one edge in that roundabout, in ascending
-     * Edge identifier order.
+     * This method gets all edges in a roundabout given one edge in that roundabout.
      *
      * @param edge
      *            An Edge object known to be a roundabout edge
-     * @return A list of edges in the roundabout
+     * @return A {@link Set} of edges in the roundabout
      */
     private Set<Edge> getAllRoundaboutEdges(final Edge edge)
     {
@@ -188,7 +189,7 @@ public class MalformedRoundaboutCheck extends BaseCheck
      *
      * @see "https://en.wikipedia.org/wiki/Right-hand_rule"
      * @param roundaboutEdges
-     *            A list of Edges in a roundabout
+     *            A {@link Route} of a roundabout
      * @return CLOCKWISE or COUNTERCLOCKWISE if all the edges have positive or negative cross
      *         products respectively, MULTIDIRECTIONAL if multiple directions are found in the same
      *         roundabout, and UNKNOWN if all edge cross products are 0 or if the roundabout's
