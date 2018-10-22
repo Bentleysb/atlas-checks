@@ -22,7 +22,7 @@ import org.openstreetmap.atlas.utilities.configuration.Configuration;
  * Wiki, each roundabout should have greater than 1 connection as 1 connection should be tagged as a
  * turning point, and no connections is obviously not a valid way.
  *
- * @author savannahostrowski
+ * @author savannahostrowski, bbreithaupt
  */
 public class RoundaboutValenceCheck extends BaseCheck
 {
@@ -64,6 +64,8 @@ public class RoundaboutValenceCheck extends BaseCheck
         return object instanceof Edge
                 // Make sure that the edges are instances of roundabout
                 && JunctionTag.isRoundabout(object)
+                // And that the edge is car navigable
+                && HighwayTag.isCarNavigableHighway(object)
                 // And that the Edge has not already been marked as flagged
                 && !this.isFlagged(object.getIdentifier())
                 // Make sure that we are only looking at master edges

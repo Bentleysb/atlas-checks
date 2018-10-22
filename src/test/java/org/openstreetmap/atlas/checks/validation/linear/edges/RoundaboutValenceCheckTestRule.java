@@ -10,7 +10,7 @@ import org.openstreetmap.atlas.utilities.testing.TestAtlas.Node;
 /**
  * {@link RoundaboutValenceCheckTest} data generator
  *
- * @author savannahostrowski
+ * @author savannahostrowski, bbreithaupt
  */
 
 public class RoundaboutValenceCheckTestRule extends CoreTestRule
@@ -39,15 +39,17 @@ public class RoundaboutValenceCheckTestRule extends CoreTestRule
                     @Node(coordinates = @Loc(value = TEST_3)),
                     @Node(coordinates = @Loc(value = TEST_4)) },
             // edges
-            edges = {
-                    @Edge(id = "1234", coordinates = { @Loc(value = TEST_1),
-                            @Loc(value = TEST_2) }, tags = { "junction=roundabout" }),
+            edges = { @Edge(id = "1234", coordinates = { @Loc(value = TEST_1),
+                    @Loc(value = TEST_2) }, tags = { "junction=roundabout", "highway=motorway" }),
                     @Edge(id = "1235", coordinates = { @Loc(value = TEST_2),
-                            @Loc(value = TEST_3) }, tags = { "junction=roundabout" }),
+                            @Loc(value = TEST_3) }, tags = { "junction=roundabout",
+                                    "highway=motorway" }),
                     @Edge(id = "1236", coordinates = { @Loc(value = TEST_3),
-                            @Loc(value = TEST_4) }, tags = { "junction=roundabout" }),
+                            @Loc(value = TEST_4) }, tags = { "junction=roundabout",
+                                    "highway=motorway" }),
                     @Edge(id = "1237", coordinates = { @Loc(value = TEST_4),
-                            @Loc(value = TEST_1) }, tags = { "junction=roundabout" }) })
+                            @Loc(value = TEST_1) }, tags = { "junction=roundabout",
+                                    "highway=motorway" }) })
     private Atlas roundaboutWithValenceZero;
 
     // Roundabout with valence of 1 (should not be labelled as roundabout but as turning loop)
@@ -59,15 +61,17 @@ public class RoundaboutValenceCheckTestRule extends CoreTestRule
                     @Node(coordinates = @Loc(value = TEST_4)),
                     @Node(coordinates = @Loc(value = TEST_5)) },
             // edges
-            edges = {
-                    @Edge(id = "2345", coordinates = { @Loc(value = TEST_1),
-                            @Loc(value = TEST_2) }, tags = { "junction=roundabout" }),
+            edges = { @Edge(id = "2345", coordinates = { @Loc(value = TEST_1),
+                    @Loc(value = TEST_2) }, tags = { "junction=roundabout", "highway=motorway" }),
                     @Edge(id = "2346", coordinates = { @Loc(value = TEST_2),
-                            @Loc(value = TEST_3) }, tags = { "junction=roundabout" }),
+                            @Loc(value = TEST_3) }, tags = { "junction=roundabout",
+                                    "highway=motorway" }),
                     @Edge(id = "2347", coordinates = { @Loc(value = TEST_3),
-                            @Loc(value = TEST_4) }, tags = { "junction=roundabout" }),
+                            @Loc(value = TEST_4) }, tags = { "junction=roundabout",
+                                    "highway=motorway" }),
                     @Edge(id = "2348", coordinates = { @Loc(value = TEST_4),
-                            @Loc(value = TEST_1) }, tags = { "junction=roundabout" }),
+                            @Loc(value = TEST_1) }, tags = { "junction=roundabout",
+                                    "highway=motorway" }),
                     @Edge(id = "2349", coordinates = { @Loc(value = TEST_1),
                             @Loc(value = TEST_5) }, tags = { "highway=motorway" }) })
     private Atlas roundaboutWithValenceOne;
@@ -82,15 +86,17 @@ public class RoundaboutValenceCheckTestRule extends CoreTestRule
                     @Node(coordinates = @Loc(value = TEST_5)),
                     @Node(coordinates = @Loc(value = TEST_6)) },
             // edges
-            edges = {
-                    @Edge(id = "3456", coordinates = { @Loc(value = TEST_1),
-                            @Loc(value = TEST_2) }, tags = { "junction=roundabout" }),
+            edges = { @Edge(id = "3456", coordinates = { @Loc(value = TEST_1),
+                    @Loc(value = TEST_2) }, tags = { "junction=roundabout", "highway=motorway" }),
                     @Edge(id = "3457", coordinates = { @Loc(value = TEST_2),
-                            @Loc(value = TEST_3) }, tags = { "junction=roundabout" }),
+                            @Loc(value = TEST_3) }, tags = { "junction=roundabout",
+                                    "highway=motorway" }),
                     @Edge(id = "3458", coordinates = { @Loc(value = TEST_3),
-                            @Loc(value = TEST_4) }, tags = { "junction=roundabout" }),
+                            @Loc(value = TEST_4) }, tags = { "junction=roundabout",
+                                    "highway=motorway" }),
                     @Edge(id = "3459", coordinates = { @Loc(value = TEST_4),
-                            @Loc(value = TEST_1) }, tags = { "junction=roundabout" }),
+                            @Loc(value = TEST_1) }, tags = { "junction=roundabout",
+                                    "highway=motorway" }),
                     @Edge(id = "3460", coordinates = { @Loc(value = TEST_1),
                             @Loc(value = TEST_5) }, tags = { "highway=motorway" }),
                     @Edge(id = "3461", coordinates = { @Loc(value = TEST_2),
@@ -109,15 +115,17 @@ public class RoundaboutValenceCheckTestRule extends CoreTestRule
                     @Node(coordinates = @Loc(value = TEST_7)),
                     @Node(coordinates = @Loc(value = TEST_8)) },
             // edges
-            edges = {
-                    @Edge(id = "4567", coordinates = { @Loc(value = TEST_1),
-                            @Loc(value = TEST_2) }, tags = { "junction=roundabout" }),
+            edges = { @Edge(id = "4567", coordinates = { @Loc(value = TEST_1),
+                    @Loc(value = TEST_2) }, tags = { "junction=roundabout", "highway=motorway" }),
                     @Edge(id = "4568", coordinates = { @Loc(value = TEST_2),
-                            @Loc(value = TEST_3) }, tags = { "junction=roundabout" }),
+                            @Loc(value = TEST_3) }, tags = { "junction=roundabout",
+                                    "highway=motorway" }),
                     @Edge(id = "4569", coordinates = { @Loc(value = TEST_3),
-                            @Loc(value = TEST_4) }, tags = { "junction=roundabout" }),
+                            @Loc(value = TEST_4) }, tags = { "junction=roundabout",
+                                    "highway=motorway" }),
                     @Edge(id = "4570", coordinates = { @Loc(value = TEST_4),
-                            @Loc(value = TEST_1) }, tags = { "junction=roundabout" }),
+                            @Loc(value = TEST_1) }, tags = { "junction=roundabout",
+                                    "highway=motorway" }),
                     @Edge(id = "4571", coordinates = { @Loc(value = TEST_1),
                             @Loc(value = TEST_5) }, tags = { "highway=motorway" }),
                     @Edge(id = "4572", coordinates = { @Loc(value = TEST_2),
@@ -140,15 +148,17 @@ public class RoundaboutValenceCheckTestRule extends CoreTestRule
                     @Node(coordinates = @Loc(value = TEST_7)),
                     @Node(coordinates = @Loc(value = TEST_8)) },
             // edges
-            edges = {
-                    @Edge(id = "1111", coordinates = { @Loc(value = TEST_1),
-                            @Loc(value = TEST_2) }, tags = { "junction=roundabout" }),
+            edges = { @Edge(id = "1111", coordinates = { @Loc(value = TEST_1),
+                    @Loc(value = TEST_2) }, tags = { "junction=roundabout", "highway=motorway" }),
                     @Edge(id = "1112", coordinates = { @Loc(value = TEST_2),
-                            @Loc(value = TEST_3) }, tags = { "junction=roundabout" }),
+                            @Loc(value = TEST_3) }, tags = { "junction=roundabout",
+                                    "highway=motorway" }),
                     @Edge(id = "1113", coordinates = { @Loc(value = TEST_3),
-                            @Loc(value = TEST_4) }, tags = { "junction=roundabout" }),
+                            @Loc(value = TEST_4) }, tags = { "junction=roundabout",
+                                    "highway=motorway" }),
                     @Edge(id = "1114", coordinates = { @Loc(value = TEST_4),
-                            @Loc(value = TEST_1) }, tags = { "junction=roundabout" }),
+                            @Loc(value = TEST_1) }, tags = { "junction=roundabout",
+                                    "highway=motorway" }),
                     @Edge(id = "1115", coordinates = { @Loc(value = TEST_1),
                             @Loc(value = TEST_5) }, tags = { "highway=motorway" }),
                     @Edge(id = "1116", coordinates = { @Loc(value = TEST_2),
@@ -184,15 +194,17 @@ public class RoundaboutValenceCheckTestRule extends CoreTestRule
                     @Node(coordinates = @Loc(value = TEST_7)),
                     @Node(coordinates = @Loc(value = TEST_8)) },
             // edges
-            edges = {
-                    @Edge(id = "1000", coordinates = { @Loc(value = TEST_1),
-                            @Loc(value = TEST_2) }, tags = { "junction=roundabout" }),
+            edges = { @Edge(id = "1000", coordinates = { @Loc(value = TEST_1),
+                    @Loc(value = TEST_2) }, tags = { "junction=roundabout", "highway=motorway" }),
                     @Edge(id = "1001", coordinates = { @Loc(value = TEST_2),
-                            @Loc(value = TEST_3) }, tags = { "junction=roundabout" }),
+                            @Loc(value = TEST_3) }, tags = { "junction=roundabout",
+                                    "highway=motorway" }),
                     @Edge(id = "1002", coordinates = { @Loc(value = TEST_3),
-                            @Loc(value = TEST_4) }, tags = { "junction=roundabout" }),
+                            @Loc(value = TEST_4) }, tags = { "junction=roundabout",
+                                    "highway=motorway" }),
                     @Edge(id = "1003", coordinates = { @Loc(value = TEST_4),
-                            @Loc(value = TEST_1) }, tags = { "junction=roundabout" }),
+                            @Loc(value = TEST_1) }, tags = { "junction=roundabout",
+                                    "highway=motorway" }),
                     @Edge(id = "1004", coordinates = { @Loc(value = TEST_1),
                             @Loc(value = TEST_5) }, tags = { "highway=motorway" }),
                     @Edge(id = "1005", coordinates = { @Loc(value = TEST_2),
@@ -233,15 +245,17 @@ public class RoundaboutValenceCheckTestRule extends CoreTestRule
                     @Node(coordinates = @Loc(value = TEST_11)),
                     @Node(coordinates = @Loc(value = TEST_12)) },
             // edges
-            edges = {
-                    @Edge(id = "1000", coordinates = { @Loc(value = TEST_1),
-                            @Loc(value = TEST_2) }, tags = { "junction=roundabout" }),
+            edges = { @Edge(id = "1000", coordinates = { @Loc(value = TEST_1),
+                    @Loc(value = TEST_2) }, tags = { "junction=roundabout", "highway=motorway" }),
                     @Edge(id = "1001", coordinates = { @Loc(value = TEST_2),
-                            @Loc(value = TEST_3) }, tags = { "junction=roundabout" }),
+                            @Loc(value = TEST_3) }, tags = { "junction=roundabout",
+                                    "highway=motorway" }),
                     @Edge(id = "1002", coordinates = { @Loc(value = TEST_3),
-                            @Loc(value = TEST_4) }, tags = { "junction=roundabout" }),
+                            @Loc(value = TEST_4) }, tags = { "junction=roundabout",
+                                    "highway=motorway" }),
                     @Edge(id = "1003", coordinates = { @Loc(value = TEST_4),
-                            @Loc(value = TEST_1) }, tags = { "junction=roundabout" }),
+                            @Loc(value = TEST_1) }, tags = { "junction=roundabout",
+                                    "highway=motorway" }),
                     @Edge(id = "1004", coordinates = { @Loc(value = TEST_1),
                             @Loc(value = TEST_5) }, tags = { "highway=motorway" }),
                     @Edge(id = "1005", coordinates = { @Loc(value = TEST_2),
@@ -289,15 +303,17 @@ public class RoundaboutValenceCheckTestRule extends CoreTestRule
                     @Node(coordinates = @Loc(value = TEST_11)),
                     @Node(coordinates = @Loc(value = TEST_12)) },
             // edges
-            edges = {
-                    @Edge(id = "1000", coordinates = { @Loc(value = TEST_1),
-                            @Loc(value = TEST_2) }, tags = { "junction=roundabout" }),
+            edges = { @Edge(id = "1000", coordinates = { @Loc(value = TEST_1),
+                    @Loc(value = TEST_2) }, tags = { "junction=roundabout", "highway=motorway" }),
                     @Edge(id = "1001", coordinates = { @Loc(value = TEST_2),
-                            @Loc(value = TEST_3) }, tags = { "junction=roundabout" }),
+                            @Loc(value = TEST_3) }, tags = { "junction=roundabout",
+                                    "highway=motorway" }),
                     @Edge(id = "1002", coordinates = { @Loc(value = TEST_3),
-                            @Loc(value = TEST_4) }, tags = { "junction=roundabout" }),
+                            @Loc(value = TEST_4) }, tags = { "junction=roundabout",
+                                    "highway=motorway" }),
                     @Edge(id = "1003", coordinates = { @Loc(value = TEST_4),
-                            @Loc(value = TEST_1) }, tags = { "junction=roundabout" }),
+                            @Loc(value = TEST_1) }, tags = { "junction=roundabout",
+                                    "highway=motorway" }),
                     @Edge(id = "1004", coordinates = { @Loc(value = TEST_1),
                             @Loc(value = TEST_5) }, tags = { "highway=motorway" }),
                     @Edge(id = "1005", coordinates = { @Loc(value = TEST_2),
