@@ -153,7 +153,8 @@ public class RoundaboutValenceCheck extends BaseCheck
                 final Long edgeId = connectedEdge.getIdentifier();
 
                 if (JunctionTag.isRoundabout(connectedEdge)
-                        && !roundaboutEdges.contains(connectedEdge))
+                        && !roundaboutEdges.contains(connectedEdge)
+                        && HighwayTag.isCarNavigableHighway(connectedEdge))
 
                 {
                     this.markAsFlagged(edgeId);
