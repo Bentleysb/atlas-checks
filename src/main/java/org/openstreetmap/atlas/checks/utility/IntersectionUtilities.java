@@ -40,7 +40,7 @@ public final class IntersectionUtilities
         }
         catch (final TopologyException e)
         {
-            logger.warn(String.format("Skipping intersection check. Error clipping [%s] and [%s].",
+            logger.debug(String.format("Skipping intersection check. Error clipping [%s] and [%s].",
                     polygon, otherPolygon), e);
         }
 
