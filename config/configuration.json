@@ -4,7 +4,14 @@
       "org.openstreetmap.atlas.checks.validation"
     ],
     "type": "org.openstreetmap.atlas.checks.base.BaseCheck",
-    "enabled.value.default": true
+    "enabled.value.default": false
+  },
+  "ColumbiaAbbreviateStreetNamesCheck":{
+    "enabled": true,
+    "countries":["COL"],
+    "filter.polygons.include.geojson": ["{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"properties\":{},\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[-74.107745063685513,4.774065509809431],[-74.048766818329938,4.796105265806741],[-73.998740628072994,4.781412173976449],[-74.008745866124372,4.681175939336373],[-74.029809525179942,4.653883993300624],[-74.085628221677183,4.470160974458596],[-74.113537569925796,4.471735941614973],[-74.169356266423037,4.539981250151846],[-74.190946516954966,4.550479957963409],[-74.212536767486938,4.539456310748535],[-74.252031128216103,4.537356549317213],[-74.256770451503598,4.580400434064444],[-74.172515815281372,4.724211073675115],[-74.107745063685513,4.774065509809431]]]}}]}"],
+    "dependsOn":["WhiteSpaceCorrection"],
+    "street.types": ["Calle","Carrera","Transversal","Diagonal"]
   },
   "PoolSizeCheck": {
     "surface": {
