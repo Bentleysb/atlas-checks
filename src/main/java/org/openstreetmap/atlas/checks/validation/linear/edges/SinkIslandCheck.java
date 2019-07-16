@@ -39,6 +39,7 @@ import org.openstreetmap.atlas.utilities.configuration.Configuration;
  * @author savannahostrowski
  * @author nachtm
  * @author sayas01
+ * @author bbreithaupt
  */
 public class SinkIslandCheck extends BaseCheck<Long>
 {
@@ -59,6 +60,8 @@ public class SinkIslandCheck extends BaseCheck<Long>
     private final HighwayTag minimumHighwayType;
     private final int storeSize;
     private final int treeSize;
+    // A switch for if flags should be connected to pedestrian Edges
+    private final boolean pedestrianConnectionsOnly;
 
     /**
      * Default constructor
@@ -79,6 +82,8 @@ public class SinkIslandCheck extends BaseCheck<Long>
         // this.treeSize
         // Therefore underlying map/queue we will never re-double the capacity
         this.storeSize = (int) (this.treeSize / LOAD_FACTOR);
+        this.pedestrianConnectionsOnly = configurationValue(configuration,
+                "pedestrian.connections.only", false);
     }
 
     @Override
@@ -95,8 +100,9 @@ public class SinkIslandCheck extends BaseCheck<Long>
     @Override
     protected Optional<CheckFlag> flag(final AtlasObject object)
     {
-        // Flag to keep track of whether we found an issue or not
-        boolean emptyFlag = false;
+        // Flag to keep track of whether we found an issue or not. Starts true if we are looking for
+        // pedestrian Edges, because we have not found any yet.
+        boolean emptyFlag = this.pedestrianConnectionsOnly;
 
         // The current edge to be explored
         Edge candidate = (Edge) object;
@@ -120,6 +126,14 @@ public class SinkIslandCheck extends BaseCheck<Long>
             {
                 emptyFlag = true;
                 break;
+            }
+
+            // If we only want to flag sinks with pedestrian connections (denoted by emptyFlag being
+            // true here) then make emptyFlag false if we find said connection.
+            if (emptyFlag && candidate.connectedEdges().stream()
+                    .anyMatch(HighwayTag::isPedestrianNavigableHighway))
+            {
+                emptyFlag = false;
             }
 
             // Retrieve all the valid outgoing edges to explore

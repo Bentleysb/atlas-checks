@@ -14,6 +14,7 @@ import org.openstreetmap.atlas.utilities.testing.TestAtlas.Node;
  * @author gpogulsky
  * @author nachtm
  * @author sayas01
+ * @author bbreithaupt
  */
 public class SinkIslandCheckTestRule extends CoreTestRule
 {
@@ -190,6 +191,42 @@ public class SinkIslandCheckTestRule extends CoreTestRule
                                     @Loc(value = TEST_14) }, tags = { "highway=service" }) })
     private Atlas edgesWithinAirportAtlas;
 
+    @TestAtlas(
+            // Nodes
+            nodes = { @Node(coordinates = @Loc(TEST_9)), @Node(coordinates = @Loc(TEST_10)),
+                    @Node(coordinates = @Loc(TEST_11)), @Node(coordinates = @Loc(TEST_12)),
+                    @Node(coordinates = @Loc(TEST_13)), @Node(coordinates = @Loc(TEST_14)) },
+            // Edges
+            edges = {
+                    @Edge(coordinates = { @Loc(TEST_9), @Loc(TEST_13) }, tags = {
+                            "highway=footway" }),
+                    @Edge(coordinates = { @Loc(TEST_10), @Loc(TEST_13) }, tags = {
+                            "highway=residential" }),
+                    @Edge(coordinates = { @Loc(TEST_10), @Loc(TEST_14) }, tags = {
+                            "highway=residential" }),
+                    @Edge(coordinates = { @Loc(TEST_13), @Loc(TEST_12) }, tags = {
+                            "highway=residential", "oneway=yes" }),
+                    @Edge(coordinates = { @Loc(TEST_14), @Loc(TEST_11) }, tags = {
+                            "highway=residential", "oneway=yes" }) })
+    private Atlas pedestrianAndCarConnectionsAtlas;
+
+    @TestAtlas(
+            // Nodes
+            nodes = { @Node(coordinates = @Loc(TEST_9)), @Node(coordinates = @Loc(TEST_10)),
+                    @Node(coordinates = @Loc(TEST_11)), @Node(coordinates = @Loc(TEST_12)),
+                    @Node(coordinates = @Loc(TEST_13)), @Node(coordinates = @Loc(TEST_14)) },
+            // Edges
+            edges = {
+                    @Edge(coordinates = { @Loc(TEST_9), @Loc(TEST_13) }, tags = {
+                            "highway=footway" }),
+                    @Edge(coordinates = { @Loc(TEST_10), @Loc(TEST_14) }, tags = {
+                            "highway=residential" }),
+                    @Edge(coordinates = { @Loc(TEST_13), @Loc(TEST_12) }, tags = {
+                            "highway=residential", "oneway=yes" }),
+                    @Edge(coordinates = { @Loc(TEST_14), @Loc(TEST_11) }, tags = {
+                            "highway=residential", "oneway=yes" }) })
+    private Atlas pedestrianOnlyConnectionAtlas;
+
     public Atlas getEdgeConnectedToPedestrianNetwork()
     {
         return this.pedestrianNetwork;
@@ -258,5 +295,15 @@ public class SinkIslandCheckTestRule extends CoreTestRule
     public Atlas getTwoEdgesWithAmenityAtlas()
     {
         return this.twoEdgesWithAmenityAtlas;
+    }
+
+    public Atlas pedestrianAndCarConnectionsAtlas()
+    {
+        return this.pedestrianAndCarConnectionsAtlas;
+    }
+
+    public Atlas pedestrianOnlyConnectionAtlas()
+    {
+        return this.pedestrianOnlyConnectionAtlas;
     }
 }

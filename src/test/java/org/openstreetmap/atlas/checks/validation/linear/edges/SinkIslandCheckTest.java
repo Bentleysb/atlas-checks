@@ -13,6 +13,7 @@ import org.openstreetmap.atlas.checks.validation.verifier.ConsumerBasedExpectedC
  * @author gpogulsky
  * @author nachtm
  * @author sayas01
+ * @author bbreithaupt
  */
 public class SinkIslandCheckTest
 {
@@ -21,6 +22,42 @@ public class SinkIslandCheckTest
 
     @Rule
     public ConsumerBasedExpectedCheckVerifier verifier = new ConsumerBasedExpectedCheckVerifier();
+
+    @Test
+    public void pedestrianAndCarConnectionsFalseTest()
+    {
+        this.verifier.actual(this.setup.pedestrianAndCarConnectionsAtlas(),
+                new SinkIslandCheck(ConfigurationResolver.inlineConfiguration(
+                        "{\"SinkIslandCheck.pedestrian.connections.only\": false}")));
+        this.verifier.verifyExpectedSize(2);
+    }
+
+    @Test
+    public void pedestrianAndCarConnectionsTrueTest()
+    {
+        this.verifier.actual(this.setup.pedestrianAndCarConnectionsAtlas(),
+                new SinkIslandCheck(ConfigurationResolver.inlineConfiguration(
+                        "{\"SinkIslandCheck.pedestrian.connections.only\": true}")));
+        this.verifier.verifyExpectedSize(1);
+    }
+
+    @Test
+    public void pedestrianOnlyConnectionFalseTest()
+    {
+        this.verifier.actual(this.setup.pedestrianOnlyConnectionAtlas(),
+                new SinkIslandCheck(ConfigurationResolver.inlineConfiguration(
+                        "{\"SinkIslandCheck.pedestrian.connections.only\": false}")));
+        this.verifier.verifyExpectedSize(2);
+    }
+
+    @Test
+    public void pedestrianOnlyConnectionTrueTest()
+    {
+        this.verifier.actual(this.setup.pedestrianOnlyConnectionAtlas(),
+                new SinkIslandCheck(ConfigurationResolver.inlineConfiguration(
+                        "{\"SinkIslandCheck.pedestrian.connections.only\": true}")));
+        this.verifier.verifyExpectedSize(1);
+    }
 
     @Test
     public void testEdgesEndingInBuilding()
