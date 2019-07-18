@@ -26,7 +26,7 @@ public class FlagReaderTestRule extends CoreTestRule
     private static final String TEST_2 = "42.8168030,10.3320820";
 
     @TestAtlas(nodes = { @Node(id = IDENTIFIER_ONE, coordinates = @Loc(value = TEST_1)),
-            @Node(id = IDENTIFIER_TWO, coordinates = @Loc(value = TEST_1)) })
+            @Node(id = IDENTIFIER_TWO, coordinates = @Loc(value = TEST_2)) })
     private Atlas atlas;
 
     /**
