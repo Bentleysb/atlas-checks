@@ -31,6 +31,7 @@ import org.openstreetmap.atlas.checks.event.CheckFlagTippecanoeProcessor;
 import org.openstreetmap.atlas.checks.event.MapRouletteClientProcessor;
 import org.openstreetmap.atlas.checks.event.MetricFileGenerator;
 import org.openstreetmap.atlas.checks.maproulette.MapRouletteConfiguration;
+import org.openstreetmap.atlas.checks.utility.DynamicPolicies;
 import org.openstreetmap.atlas.checks.utility.ShardGroup;
 import org.openstreetmap.atlas.checks.utility.ShardGrouper;
 import org.openstreetmap.atlas.checks.utility.UniqueCheckFlagContainer;
@@ -305,32 +306,7 @@ public class ShardedIntegrityChecksSparkJob extends IntegrityChecksCommandArgume
     {
         return task ->
         {
-            final Function<Shard, Optional<Atlas>> fetcher = this.atlasFetcher(input,
-                    task.getCountry(), configurationMap);
-            final Atlas atlas;
-
-            if (dynamic)
-            {
-                logger.info("Running with a dynamic atlas");
-                final DynamicAtlasPolicy policy = new DynamicAtlasPolicy(fetcher,
-                        sharding.getValue(), new HashSet<>(task.getShardGroup()),
-                        Rectangle.forLocated(task.getShardGroup()).bounds()
-                                .expand(shardDistanceExpansion)).withDeferredLoading(true)
-                                        .withAggressivelyExploreRelations(true)
-                                        .withExtendIndefinitely(false);
-                atlas = new DynamicAtlas(policy);
-            }
-            else
-            {
-                logger.info("Running with a multi atlas");
-                final ShardGroup shardGroup = task.getShardGroup();
-                final Rectangle expansionBounds = Rectangle.forLocated(shardGroup)
-                        .expand(shardDistanceExpansion);
-                atlas = new MultiAtlas(StreamSupport
-                        .stream(sharding.getValue().shards(expansionBounds).spliterator(), true)
-                        .map(fetcher).filter(Optional::isPresent).map(Optional::get)
-                        .collect(Collectors.toList()));
-            }
+            final Atlas atlas = new DynamicAtlas(DynamicPolicies.everythingTenKilometerExpansion(input, task, configurationMap, sharding));
 
             final AtlasEntityPolygonsFilter boundaryFilter = AtlasEntityPolygonsFilter.Type.INCLUDE
                     .geometricSurfaces(task.getShardGroup().stream().map(Shard::bounds)
