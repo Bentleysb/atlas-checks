@@ -381,6 +381,7 @@ public class ShardedIntegrityChecksSparkJob extends IntegrityChecksCommandArgume
                                         .withAggressivelyExploreRelations(true)
                                         .withExtendIndefinitely(false);
                 atlas = new DynamicAtlas(policy);
+                ((DynamicAtlas) atlas).preemptiveLoad();
             }
             else
             {
