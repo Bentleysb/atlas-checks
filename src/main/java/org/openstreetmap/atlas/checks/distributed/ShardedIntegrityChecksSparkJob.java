@@ -104,6 +104,7 @@ public class ShardedIntegrityChecksSparkJob extends IntegrityChecksCommandArgume
     @Override
     public void start(final CommandMap commandMap)
     {
+        logger.error("BSB Debug: command map: {}", commandMap);
         final Time start = Time.now();
         final String atlasDirectory = (String) commandMap.get(ATLAS_FOLDER);
         final String input = Optional.ofNullable(input(commandMap)).orElse(atlasDirectory);
