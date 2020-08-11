@@ -13,4 +13,4 @@ class LogCount(BaseCommand):
 
     def run(self):
         spark = SparkSession.builder.appName("LogCount").getOrCreate()
-        self.logger.error(spark.read.json(self.args.input, recursiveFileLookup=True).count())
+        self.logger.error(spark.read.json(self.args.input).count())
