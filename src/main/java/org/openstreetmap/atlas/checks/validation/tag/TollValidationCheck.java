@@ -81,7 +81,9 @@ public class TollValidationCheck extends BaseCheck<Long>
         return TypePredicates.IS_EDGE.test(object) && ((Edge) object).isMainEdge()
                 && ((Edge) object).highwayTag().isMoreImportantThan(this.minHighwayType)
                 && !isFlagged(object.getOsmIdentifier())
-                && !this.isPrivateAccess(object.getOsmTags());
+                && !this.isPrivateAccess(object.getOsmTags())
+                && (String.valueOf(object.getIdentifier()).endsWith("000000")
+                        || String.valueOf(object.getIdentifier()).endsWith("000001"));
     }
 
     /**
