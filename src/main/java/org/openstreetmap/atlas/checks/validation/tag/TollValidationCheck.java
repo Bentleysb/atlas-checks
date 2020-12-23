@@ -272,7 +272,7 @@ public class TollValidationCheck extends BaseCheck<Long>
     private Optional<Edge> edgeProvingBackwardsIsEscapable(final Edge edge,
             final Set<Long> alreadyCheckedObjectIds)
     {
-        final Set<Edge> inEdges = this.getInEdges(edge);
+        final List<Edge> inEdges = this.getInEdges(edge);
 
         for (final Edge inEdge : inEdges)
         {
@@ -312,7 +312,7 @@ public class TollValidationCheck extends BaseCheck<Long>
     private Optional<Edge> edgeProvingForwardIsEscapable(final Edge edge,
             final Set<Long> alreadyCheckedObjectIds)
     {
-        final Set<Edge> outEdges = this.getOutEdges(edge);
+        final List<Edge> outEdges = this.getOutEdges(edge);
         for (final Edge outEdge : outEdges)
         {
             if (outEdges.size() >= this.minInAndOutEdges
@@ -394,11 +394,11 @@ public class TollValidationCheck extends BaseCheck<Long>
      *            some edge
      * @return in edges that are car navigable and positive (eliminates reverse edges)
      */
-    private Set<Edge> getInEdges(final Edge edge)
+    private List<Edge> getInEdges(final Edge edge)
     {
         return edge.inEdges().stream().filter(
                 someEdge -> someEdge.isMainEdge() && HighwayTag.isCarNavigableHighway(someEdge))
-                .collect(Collectors.toSet());
+                .sorted().collect(Collectors.toList());
     }
 
     /**
@@ -409,7 +409,7 @@ public class TollValidationCheck extends BaseCheck<Long>
     private Optional<Long> getNearbyTollFeatureInEdgeSide(final Edge edge,
             final Set<Long> alreadyCheckedNearbyTollEdges, final Counter counter)
     {
-        final Set<Edge> inEdges = this.getInEdges(edge);
+        final List<Edge> inEdges = this.getInEdges(edge);
         for (final Edge inEdge : inEdges)
         {
             if (inEdges.size() >= this.minInAndOutEdges && this.edgeIntersectsTollFeature(inEdge)
@@ -439,7 +439,7 @@ public class TollValidationCheck extends BaseCheck<Long>
     private Optional<Long> getNearbyTollFeatureOutEdgeSide(final Edge edge,
             final Set<Long> alreadyCheckedNearbyTollEdges, final Counter counter)
     {
-        final Set<Edge> outEdges = this.getOutEdges(edge);
+        final List<Edge> outEdges = this.getOutEdges(edge);
 
         for (final Edge outEdge : outEdges)
         {
@@ -467,11 +467,11 @@ public class TollValidationCheck extends BaseCheck<Long>
      *            some edge
      * @return out edges that are car navigable and positive (eliminates reverse edges)
      */
-    private Set<Edge> getOutEdges(final Edge edge)
+    private List<Edge> getOutEdges(final Edge edge)
     {
         return edge.outEdges().stream().filter(
                 someEdge -> someEdge.isMainEdge() && HighwayTag.isCarNavigableHighway(someEdge))
-                .collect(Collectors.toSet());
+                .sorted().collect(Collectors.toList());
     }
 
     /**
