@@ -1,9 +1,13 @@
 package org.openstreetmap.atlas.checks.validation.intersections;
 
+import static org.openstreetmap.atlas.checks.constants.CommonConstants.COMMA;
+import static org.openstreetmap.atlas.checks.constants.CommonConstants.EMPTY_STRING;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.openstreetmap.atlas.checks.atlas.predicates.TagPredicates;
 import org.openstreetmap.atlas.checks.base.BaseCheck;
@@ -14,12 +18,13 @@ import org.openstreetmap.atlas.geography.Location;
 import org.openstreetmap.atlas.geography.PolyLine;
 import org.openstreetmap.atlas.geography.Segment;
 import org.openstreetmap.atlas.geography.atlas.items.Area;
+import org.openstreetmap.atlas.geography.atlas.items.AtlasEntity;
 import org.openstreetmap.atlas.geography.atlas.items.AtlasObject;
 import org.openstreetmap.atlas.geography.atlas.items.Edge;
+import org.openstreetmap.atlas.geography.atlas.items.ItemType;
 import org.openstreetmap.atlas.geography.atlas.items.Line;
 import org.openstreetmap.atlas.tags.BuildingTag;
 import org.openstreetmap.atlas.tags.HighwayTag;
-import org.openstreetmap.atlas.tags.WaterwayTag;
 import org.openstreetmap.atlas.tags.annotations.validation.Validators;
 import org.openstreetmap.atlas.utilities.configuration.Configuration;
 import org.slf4j.Logger;
@@ -32,6 +37,7 @@ import org.slf4j.LoggerFactory;
  * @author mgostintsev
  * @author dbaah
  * @author sayas01
+ * @author bbreithaupt
  */
 public class SelfIntersectingPolylineCheck extends BaseCheck<Long>
 {
@@ -45,11 +51,14 @@ public class SelfIntersectingPolylineCheck extends BaseCheck<Long>
             + "{0,number,#} at {1}";
     private static final List<String> FALLBACK_INSTRUCTIONS = Arrays.asList(POLYLINE_INSTRUCTION,
             AREA_INSTRUCTION, POLYLINE_BUILDING_INSTRUCTION, DUPLICATE_EDGE_INSTRUCTION);
+    private static final String TYPE_FILTER_DEFAULT = String.join(COMMA, Arrays
+            .asList(ItemType.EDGE.toString(), ItemType.LINE.toString(), ItemType.AREA.toString()));
     private static final Logger logger = LoggerFactory
             .getLogger(SelfIntersectingPolylineCheck.class);
     private static final String MINIMUM_HIGHWAY_TYPE_DEFAULT = "SERVICE";
     private static final long serialVersionUID = 2722288442633787006L;
     private final HighwayTag minimumHighwayType;
+    private final Set<Class<AtlasEntity>> itemTypeFilter;
 
     /**
      * Default constructor
@@ -63,6 +72,14 @@ public class SelfIntersectingPolylineCheck extends BaseCheck<Long>
         // Retrieve minimum highway type from the config
         this.minimumHighwayType = this.configurationValue(configuration, "minimum.highway.type",
                 MINIMUM_HIGHWAY_TYPE_DEFAULT, string -> HighwayTag.valueOf(string.toUpperCase()));
+
+        this.itemTypeFilter = this.configurationValue(configuration, "item.type.filter",
+                TYPE_FILTER_DEFAULT,
+                joinedValues -> Arrays
+                        .stream((joinedValues.equals(EMPTY_STRING) ? TYPE_FILTER_DEFAULT
+                                : joinedValues).split(COMMA))
+                        .map(string -> ItemType.valueOf(string.toUpperCase()).getMemberClass())
+                        .collect(Collectors.toSet()));
     }
 
     /**
@@ -80,15 +97,11 @@ public class SelfIntersectingPolylineCheck extends BaseCheck<Long>
     public boolean validCheckForObject(final AtlasObject object)
     {
         // Main edges with building tags or with eligible highway tags
-        return object instanceof Edge && ((Edge) object).isMainEdge()
-                && (Validators.hasValuesFor(object, BuildingTag.class) || ((Edge) object)
-                        .highwayTag().isMoreImportantThanOrEqualTo(this.minimumHighwayType))
-                // Areas
-                || object instanceof Area
-                // Lines excluding ineligible highway tags
-                || object instanceof Line
-                        // Exclude waterway tags
-                        && !Validators.hasValuesFor(object, WaterwayTag.class);
+        return this.itemTypeFilter.stream().anyMatch(type -> type.isInstance(object))
+                && (!(object instanceof Edge) || (((Edge) object).isMainEdge()
+                        && (Validators.hasValuesFor(object, BuildingTag.class)
+                                || ((Edge) object).highwayTag()
+                                        .isMoreImportantThanOrEqualTo(this.minimumHighwayType))));
     }
 
     @Override
