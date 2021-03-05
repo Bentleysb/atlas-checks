@@ -51,6 +51,29 @@ public class InvalidTurnRestrictionTest
     }
 
     @Test
+    public void invalidOnlyStraightOnTest()
+    {
+        this.verifier.actual(this.testCaseRule.invalidOnlyStraightOnAtlas(),
+                new InvalidTurnRestrictionCheck(ConfigurationResolver.inlineConfiguration(
+                        "{\"InvalidTurnRestrictionCheck\":{\"straight.maximum\":40.0}}")));
+        this.verifier.verifyExpectedSize(1);
+    }
+
+    @Test
+    public void invalidOnlyStraightOnViaConfigurationTest()
+    {
+        this.verifier.actual(this.testCaseRule.validOnlyStraightOnViaAtlas(), testCheck);
+        this.verifier.verifyEmpty();
+    }
+
+    @Test
+    public void invalidOnlyStraightOnViaTest()
+    {
+        this.verifier.actual(this.testCaseRule.invalidOnlyStraightOnViaAtlas(), testCheck);
+        this.verifier.verifyExpectedSize(1);
+    }
+
+    @Test
     public void onlyViaTest()
     {
         this.verifier.actual(this.testCaseRule.onlyViaAtlas(), testCheck);
@@ -96,5 +119,19 @@ public class InvalidTurnRestrictionTest
     {
         this.verifier.actual(this.testCaseRule.getInvalidRelationAtlas(), testCheck);
         this.verifier.verifyNotEmpty();
+    }
+
+    @Test
+    public void validOnlyStraightOnTest()
+    {
+        this.verifier.actual(this.testCaseRule.validOnlyStraightOnAtlas(), testCheck);
+        this.verifier.verifyEmpty();
+    }
+
+    @Test
+    public void validOnlyStraightOnViaTest()
+    {
+        this.verifier.actual(this.testCaseRule.validOnlyStraightOnViaAtlas(), testCheck);
+        this.verifier.verifyEmpty();
     }
 }

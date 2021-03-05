@@ -195,6 +195,88 @@ public class InvalidTurnRestrictionTestRule extends CoreTestRule
                             "type=restriction", "restriction=only_right_turn" }) })
     private Atlas redundantRestrictionAtlas;
 
+    @TestAtlas(
+            // nodes
+            nodes = { @Node(id = "1000000", coordinates = @Loc(value = TEST_1)),
+                    @Node(id = "2000000", coordinates = @Loc(value = TEST_2)),
+                    @Node(id = "5000000", coordinates = @Loc(value = TEST_5)), },
+            // edges
+            edges = {
+                    @Edge(id = "1000000", coordinates = { @Loc(value = TEST_1),
+                            @Loc(value = TEST_2) }),
+                    @Edge(id = "2000000", coordinates = { @Loc(value = TEST_2),
+                            @Loc(value = TEST_5) }) },
+            // relations
+            relations = {
+                    @Relation(members = { @Member(id = "1000000", type = "edge", role = "from"),
+                            @Member(id = "2000000", type = "edge", role = "to"),
+                            @Member(id = "2000000", type = "node", role = "via") }, tags = {
+                                    "type=restriction", "restriction=only_straight_on" }) })
+    private Atlas validOnlyStraightOnAtlas;
+
+    @TestAtlas(
+            // nodes
+            nodes = { @Node(id = "1000000", coordinates = @Loc(value = TEST_1)),
+                    @Node(id = "2000000", coordinates = @Loc(value = TEST_2)),
+                    @Node(id = "4000000", coordinates = @Loc(value = TEST_4)), },
+            // edges
+            edges = {
+                    @Edge(id = "1000000", coordinates = { @Loc(value = TEST_1),
+                            @Loc(value = TEST_2) }),
+                    @Edge(id = "2000000", coordinates = { @Loc(value = TEST_2),
+                            @Loc(value = TEST_4) }) },
+            // relations
+            relations = {
+                    @Relation(members = { @Member(id = "1000000", type = "edge", role = "from"),
+                            @Member(id = "2000000", type = "edge", role = "to"),
+                            @Member(id = "2000000", type = "node", role = "via") }, tags = {
+                                    "type=restriction", "restriction=only_straight_on" }) })
+    private Atlas invalidOnlyStraightOnAtlas;
+
+    @TestAtlas(
+            // nodes
+            nodes = { @Node(id = "1000000", coordinates = @Loc(value = TEST_1)),
+                    @Node(id = "2000000", coordinates = @Loc(value = TEST_2)),
+                    @Node(id = "3000000", coordinates = @Loc(value = TEST_3)),
+                    @Node(id = "4000000", coordinates = @Loc(value = TEST_4)), },
+            // edges
+            edges = {
+                    @Edge(id = "1000000", coordinates = { @Loc(value = TEST_1),
+                            @Loc(value = TEST_2) }),
+                    @Edge(id = "2000000", coordinates = { @Loc(value = TEST_2),
+                            @Loc(value = TEST_3) }),
+                    @Edge(id = "3000000", coordinates = { @Loc(value = TEST_3),
+                            @Loc(value = TEST_4) }) },
+            // relations
+            relations = {
+                    @Relation(members = { @Member(id = "1000000", type = "edge", role = "from"),
+                            @Member(id = "2000000", type = "edge", role = "via"),
+                            @Member(id = "3000000", type = "edge", role = "to") }, tags = {
+                                    "type=restriction", "restriction=only_straight_on" }) })
+    private Atlas validOnlyStraightOnViaAtlas;
+
+    @TestAtlas(
+            // nodes
+            nodes = { @Node(id = "1000000", coordinates = @Loc(value = TEST_1)),
+                    @Node(id = "2000000", coordinates = @Loc(value = TEST_2)),
+                    @Node(id = "3000000", coordinates = @Loc(value = TEST_3)),
+                    @Node(id = "5000000", coordinates = @Loc(value = TEST_5)), },
+            // edges
+            edges = {
+                    @Edge(id = "1000000", coordinates = { @Loc(value = TEST_1),
+                            @Loc(value = TEST_3) }),
+                    @Edge(id = "2000000", coordinates = { @Loc(value = TEST_3),
+                            @Loc(value = TEST_2) }),
+                    @Edge(id = "3000000", coordinates = { @Loc(value = TEST_2),
+                            @Loc(value = TEST_5) }) },
+            // relations
+            relations = {
+                    @Relation(members = { @Member(id = "1000000", type = "edge", role = "from"),
+                            @Member(id = "2000000", type = "edge", role = "via"),
+                            @Member(id = "3000000", type = "edge", role = "to") }, tags = {
+                                    "type=restriction", "restriction=only_straight_on" }) })
+    private Atlas invalidOnlyStraightOnViaAtlas;
+
     public Atlas disconnectedFromAtlas()
     {
         return this.disconnectedFromAtlas;
@@ -225,6 +307,16 @@ public class InvalidTurnRestrictionTestRule extends CoreTestRule
         return this.invalidRelationAtlas;
     }
 
+    public Atlas invalidOnlyStraightOnAtlas()
+    {
+        return this.invalidOnlyStraightOnAtlas;
+    }
+
+    public Atlas invalidOnlyStraightOnViaAtlas()
+    {
+        return this.invalidOnlyStraightOnViaAtlas;
+    }
+
     public Atlas onlyViaAtlas()
     {
         return this.onlyViaAtlas;
@@ -238,5 +330,15 @@ public class InvalidTurnRestrictionTestRule extends CoreTestRule
     public Atlas sameFromToNoViaAtlas()
     {
         return this.sameFromToNoViaAtlas;
+    }
+
+    public Atlas validOnlyStraightOnAtlas()
+    {
+        return this.validOnlyStraightOnAtlas;
+    }
+
+    public Atlas validOnlyStraightOnViaAtlas()
+    {
+        return this.validOnlyStraightOnViaAtlas;
     }
 }

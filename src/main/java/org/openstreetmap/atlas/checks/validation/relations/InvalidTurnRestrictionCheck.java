@@ -10,13 +10,16 @@ import java.util.stream.Collectors;
 
 import org.openstreetmap.atlas.checks.base.BaseCheck;
 import org.openstreetmap.atlas.checks.flag.CheckFlag;
+import org.openstreetmap.atlas.geography.Heading;
 import org.openstreetmap.atlas.geography.atlas.items.AtlasObject;
 import org.openstreetmap.atlas.geography.atlas.items.Relation;
 import org.openstreetmap.atlas.geography.atlas.items.RelationMember;
 import org.openstreetmap.atlas.geography.atlas.items.TurnRestriction;
 import org.openstreetmap.atlas.tags.RelationTypeTag;
 import org.openstreetmap.atlas.tags.TurnRestrictionTag;
+import org.openstreetmap.atlas.tags.annotations.validation.Validators;
 import org.openstreetmap.atlas.utilities.configuration.Configuration;
+import org.openstreetmap.atlas.utilities.scalars.Angle;
 
 /**
  * Check for invalid turn restrictions
@@ -27,11 +30,13 @@ import org.openstreetmap.atlas.utilities.configuration.Configuration;
 public class InvalidTurnRestrictionCheck extends BaseCheck<Long>
 {
     private static final List<String> FALLBACK_INSTRUCTIONS = Collections.singletonList(
-            "Relation ID: {0,number,#} is marked as turn restriction, but it is not well-formed: {1}");
+            "Relation, ID: {0,number,#}, is marked as turn restriction, but it is not well-formed: {1}");
     private static final String MISSING_TO_FROM_INSTRUCTION = "Missing a from and/or to member";
     private static final String UNKNOWN_ISSUE = "Unable to specify issue";
+    private static final String BAD_STRAIGHT_ON_INSTRUCTION = "The from member(s) connects to the via or to member(s) at an angle greater than %s degree, which is to high for to be considered straight on.";
     private static final Map<String, String> INVALID_REASON_INSTRUCTION_MAP = new HashMap<>();
     private static final long serialVersionUID = -983698716949386657L;
+    private static final Double STRAIGHT_ON_THRESHOLD = 60.0;
 
     static
     {
@@ -52,6 +57,8 @@ public class InvalidTurnRestrictionCheck extends BaseCheck<Long>
                 routeInstruction);
     }
 
+    private Angle straightOnThreshold;
+
     /**
      * Default constructor
      *
@@ -61,6 +68,8 @@ public class InvalidTurnRestrictionCheck extends BaseCheck<Long>
     public InvalidTurnRestrictionCheck(final Configuration configuration)
     {
         super(configuration);
+        this.straightOnThreshold = this.configurationValue(configuration, "straight.maximum",
+                STRAIGHT_ON_THRESHOLD, Angle::degrees);
     }
 
     @Override
@@ -94,6 +103,31 @@ public class InvalidTurnRestrictionCheck extends BaseCheck<Long>
             return Optional.of(createFlag(members, this.getLocalizedInstruction(0,
                     relation.getOsmIdentifier(),
                     this.getInstructionFromInvalidReason(turnRestriction.getInvalidReason()))));
+        }
+
+        final Optional<Heading> fromHeading = turnRestriction.getFrom().asPolyLine().finalHeading();
+        final Optional<Heading> toHeading = turnRestriction.getTo().asPolyLine().initialHeading();
+        final Optional<Heading> viaHeading = turnRestriction.getVia()
+                .map(route -> route.asPolyLine().initialHeading().get());
+
+        // Check otherwise valid only_straight_on restrictions form a turn
+        if (Validators.isOfType(relation, TurnRestrictionTag.class,
+                TurnRestrictionTag.ONLY_STRAIGHT_ON)
+                // From members must have a heading
+                && fromHeading.isPresent()
+                // If via route exists then check heading difference between from and via
+                && ((viaHeading.isPresent() && fromHeading.get().difference(viaHeading.get())
+                        .isGreaterThan(this.straightOnThreshold))
+                        // Else check the difference between from and to
+                        || (viaHeading.isEmpty() && toHeading.isPresent()
+                                && fromHeading.get().difference(toHeading.get())
+                                        .isGreaterThan(this.straightOnThreshold))))
+        {
+            return Optional
+                    .of(this.createFlag(members,
+                            this.getLocalizedInstruction(0, relation.getOsmIdentifier(),
+                                    String.format(BAD_STRAIGHT_ON_INSTRUCTION,
+                                            this.straightOnThreshold.asDegrees()))));
         }
 
         return Optional.empty();

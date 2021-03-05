@@ -508,6 +508,7 @@
     }
   },
   "InvalidTurnRestrictionCheck": {
+    "straight.maximum": 60.0,
     "challenge": {
       "description": "Tasks containing invalid turn restrictions",
       "blurb": "Invalid Turn Restrictions",
